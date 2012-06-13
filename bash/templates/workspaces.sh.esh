@@ -1,0 +1,10 @@
+# setup the workspaces file.
+
+--
+for workspace in "${workspaces[@]}"
+do
+	cat <<-EOF
+alias $workspace='cd $user_home/Desktop/Workspaces/$workspace'
+	EOF
+done
+-- 

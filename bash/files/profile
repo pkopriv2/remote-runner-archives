@@ -115,4 +115,7 @@ for script in /etc/profile.d/*.sh ; do
         fi
 done
 
-#. /etc/bash_completion
+if [ -f /etc/bash_completion ]
+then
+	. /etc/bash_completion
+fi

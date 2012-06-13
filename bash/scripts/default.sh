@@ -1,30 +1,41 @@
 #! /bin/bash
 
 archive_file "/etc/profile" <<-FILE
-	src "etc_profile
+	src "profile"
 FILE
 
-directory "/etc/profile.d"
+directory "/etc/profile.d" 
 
 archive_file "/etc/profile.d/history.sh" <<-FILE
 	src "profile.d/history.sh"
 FILE
 
+archive_file "/etc/profile.d/dircolors.sh" <<-FILE
+	src "profile.d/dircolors.sh"
+FILE
 
 bash_users=${bash_users:-()}
 for user in "${bash_users[@]}"
 do
-	group="$(user_get_primary_group $user)"
+	log_info "Setting up bash for [$user]"
 
-	archive_file "$(user_get_home $user)" <<-FILE
+	user_home="$(user_get_home $user)" 
+	user_group="$(user_get_primary_group $user)"
+
+	archive_file "$user_home/.profile" <<-FILE
 		src ".profile"
 		owner $user
-		group 
+		group $user_group
+	FILE
+	
+	archive_file "$user_home/.bash_profile" <<-FILE
+		src ".bash_profile"
+		owner $user
+		group $user_group
 	FILE
 
-	directory "~/.profile.d" <<-DIR
+	directory "$user_home/.profile.d" <<-DIR
 		owner $user
-		group $group
-		permissions "755"
+		group $user_group
 	DIR
 done

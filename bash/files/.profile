@@ -6,7 +6,7 @@ set -o vi
 
 alias .profile='vim ~/.profile'
 alias .profile.d='cd ~/.profile.d'
-alias profile='sudo vim /etc/bash.profile'
+alias profile='sudo vim /etc/profile'
 alias profile.d='cd /etc/profile.d/'
 
 alias init.d='cd /etc/init.d'
@@ -14,7 +14,7 @@ alias init.d='cd /etc/init.d'
 alias Downloads='cd ~/Downloads'
 alias Desktop='cd ~/Desktop'
 
-for script in ~/.bashrc.d/*.sh ; do
+for script in ~/.profile.d/*.sh ; do
         if [ -r $script ] ; then
                 . $script
         fi
@@ -25,4 +25,3 @@ pathappend ~/.bashrc.d
 
 # Put pwd on the path.
 pathappend .
-
