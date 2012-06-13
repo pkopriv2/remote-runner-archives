@@ -1,0 +1,118 @@
+# If this is the root user, do nothing
+[ $EUID == 0 ] && return
+
+# To enable the settings / commands in this file for login shells as well,
+# this file has to be sourced in /etc/profile.
+pathremove () {
+        local IFS=':'
+        local NEWPATH
+        local DIR
+        local PATHVARIABLE=${2:-PATH}
+        for DIR in ${!PATHVARIABLE} ; do
+                if [ "$DIR" != "$1" ] ; then
+                  NEWPATH=${NEWPATH:+$NEWPATH:}$DIR
+                fi
+        done
+        export $PATHVARIABLE="$NEWPATH"
+}
+
+pathprepend () {
+        pathremove $1 $2
+        local PATHVARIABLE=${2:-PATH}
+        export $PATHVARIABLE="$1${!PATHVARIABLE:+:${!PATHVARIABLE}}"
+}
+
+pathappend () {
+        pathremove $1 $2
+        local PATHVARIABLE=${2:-PATH}
+        export $PATHVARIABLE="${!PATHVARIABLE:+${!PATHVARIABLE}:}$1"
+}
+
+# reset
+color_off='\e[0m'       # text reset
+
+# regular colors
+black='\e[0;30m'        # black
+red='\e[0;31m'          # red
+green='\e[0;32m'        # green
+yellow='\e[0;33m'       # yellow
+blue='\e[0;34m'         # blue
+purple='\e[0;35m'       # purple
+cyan='\e[0;36m'         # cyan
+white='\e[0;37m'        # white
+
+# bold
+bblack='\e[1;30m'       # black
+bred='\e[1;31m'         # red
+bgreen='\e[1;32m'       # green
+byellow='\e[1;33m'      # yellow
+bblue='\e[1;34m'        # blue
+bpurple='\e[1;35m'      # purple
+bcyan='\e[1;36m'        # cyan
+bwhite='\e[1;37m'       # white
+
+# underline
+ublack='\e[4;30m'       # black
+ured='\e[4;31m'         # red
+ugreen='\e[4;32m'       # green
+uyellow='\e[4;33m'      # yellow
+ublue='\e[4;34m'        # blue
+upurple='\e[4;35m'      # purple
+ucyan='\e[4;36m'        # cyan
+uwhite='\e[4;37m'       # white
+
+# background
+on_black='\e[40m'       # black
+on_red='\e[41m'         # red
+on_green='\e[42m'       # green
+on_yellow='\e[43m'      # yellow
+on_blue='\e[44m'        # blue
+on_purple='\e[45m'      # purple
+on_cyan='\e[46m'        # cyan
+on_white='\e[47m'       # white
+
+# high intensty
+iblack='\e[0;90m'       # black
+ired='\e[0;91m'         # red
+igreen='\e[0;92m'       # green
+iyellow='\e[0;93m'      # yellow
+iblue='\e[0;94m'        # blue
+ipurple='\e[0;95m'      # purple
+icyan='\e[0;96m'        # cyan
+iwhite='\e[0;97m'       # white
+
+# bold high intensty
+biblack='\e[1;90m'      # black
+bired='\e[1;91m'        # red
+bigreen='\e[1;92m'      # green
+biyellow='\e[1;93m'     # yellow
+biblue='\e[1;94m'       # blue
+bipurple='\e[1;95m'     # purple
+bicyan='\e[1;96m'       # cyan
+biwhite='\e[1;97m'      # white
+
+# high intensty backgrounds
+on_iblack='\e[0;100m'   # black
+on_ired='\e[0;101m'     # red
+on_igreen='\e[0;102m'   # green
+on_iyellow='\e[0;103m'  # yellow
+on_iblue='\e[0;104m'    # blue
+on_ipurple='\e[10;95m'  # purple
+on_icyan='\e[0;106m'    # cyan
+on_iwhite='\e[0;107m'   # white
+
+# If not running interactively, do nothing
+[ -z "$PS1" ] && return
+
+
+# setup the prompt
+PS1="$bired\u [ $color_off\w$bired ]\$ $color_off"
+
+# run all the scripts in the startup directory
+for script in /etc/profile.d/*.sh ; do
+        if [ -r $script ] ; then
+                . $script
+        fi
+done
+
+#. /etc/bash_completion
